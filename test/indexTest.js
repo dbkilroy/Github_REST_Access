@@ -13,9 +13,14 @@ describe('index', function(){
         assert.typeOf(result, 'string');
   });
 
-  it('n', function(){
+  it('type of result should be string', function(){
       let result = app.getDefault();
-      console.log("\nYoke:", result);
-      assert.equal(result.statusCode, 403);
+      assert.typeOf(result, "string");
+  });
+
+  it('status should be 200', function(){
+      let result = app.getDefault();
+      console.log(result);
+      assert.equal(result, 200);
   });
 });
