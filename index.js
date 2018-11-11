@@ -70,13 +70,16 @@ exports.addUser = function(request, response){
     user.following = request.body.following;
     user.repo_count = request.body.public_repos;
     user.repos_url = request.body.repos_url;
-
-    // login: {type: String, required: true},
-    // id: {type: Number, required: true, unique: true},
-    // public_repos: {type: Number, required: true},
-    // followers: {type: Number, required: true},
-    // following: {type: Number, required: true},
-    // repos_url: {type: String, required: true}
+    user.save(function(err, user){
+        if(err) return response.set(500).send(err);
+        response.set(201).send(
+            {
+                success: "User added!",
+                user: user
+            }
+        );
+        return;
+    });
 }
 
 
