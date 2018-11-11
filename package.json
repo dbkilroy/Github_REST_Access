@@ -22,6 +22,7 @@
     "mocha": "^5.2.0"
   },
   "dependencies": {
+    "mongoose": "^5.3.11",
     "octonode": "^0.9.5"
   }
 }
