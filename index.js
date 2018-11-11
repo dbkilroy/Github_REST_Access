@@ -1,9 +1,15 @@
+//Package Imports
 var https = require("https");
 var fs = require("fs");
 var github = require("octonode");
 
+//Modal Imports
+var User = require('../model/user.js');
+
+//Exports
 var exports = module.exports = {};
 
+//---------------GET Default---------------//
 exports.getDefault = function(request, response){
     // var intResult = 0;
     // var stringResult = "";
