@@ -1,15 +1,32 @@
 //Package Imports
-var https = require("https");
-var fs = require("fs");
-var github = require("octonode");
+var busboyBodyParser = require('busboy-body-parser');
+var https = require('https');
+var express = require('express');
+var fs = require('fs');
+var github = require('octonode');
 
 //Modal Imports
 var User = require('./model/user.js');
 
+//Script Defintions
+var app = express();
+var APIRouter = express.Router();
+
 //Exports
 //var exports = module.exports = {};
 
-//---------------GET Default---------------//
+//Connecting to Database
+mongoose.connect('mongodb://127.0.0.1/db');
+app.use(busboyBodyParser({ limit: '10mb' }));
+
+//---------------GET Requests---------------//
+//APIRouter.get('/user/:username', getUser);
+
+
+
+
+
+//---------------API Routes---------------//
 exports.getDefault = function(request, response){
 
     var client = github.client();
@@ -42,7 +59,7 @@ exports.getUser = function(request, response){
         user.following = body.following;
         user.repo_count = body.public_repos;
         user.repos_url = body.repos_url;
-        user.save(function(err, user){
+        user.save(function(err, user) {
             if(err) return response.set(500).send(err);
             return response.set(201).send(
                 {

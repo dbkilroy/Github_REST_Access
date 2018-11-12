@@ -22,6 +22,8 @@
     "mocha": "^5.2.0"
   },
   "dependencies": {
+    "busboy-body-parser": "^0.3.2",
+    "express": "^4.16.4",
     "mongoose": "^5.3.11",
     "octonode": "^0.9.5"
   }
