@@ -11,8 +11,7 @@ var User = require('./model/user.js');
 
 //---------------GET Default---------------//
 exports.getDefault = function(request, response){
-    // var intResult = 0;
-    // var stringResult = "";
+
     var client = github.client();
     client.get("/users/psunkara", {}, function(err, status, body, headers) {
         console.log(body);
@@ -27,60 +26,34 @@ exports.getDefault = function(request, response){
         //console.log(stringResult);
         //console.log("Headers= " + JSON.stringify(headers));
         //console.log("Body= " + bodyText);
-
-        // var options = {
-        //     hostname: 'api.github.com',
-        //     port: 443,
-        //     path: '/repos/kilroyda/Github_REST_Access/git/commits',
-        //     method: 'GET',
-        //     message: 'arbitrary',
-        //     headers: {
-        //         'User-Agent': 'Awesome-Octocat-App'
-        //     }
-        //
-        // };
-        //
-        // var responseString = "";
-        // var req = https.request(options, function (res) {
-        //     console.log('statusCode: ', res.statusCode);
-        //     console.log('headers: ', res.headers);
-        //
-        //     res.on('data', function (data) {
-        //         console.log(responseString += data);
-        //     });
-        //     res.on("end", function () {
-        //         console.log(responseString);
-        //     });
-        // });
-        //
-        // req.end();
-        // req.on('error', (e) => {
-        //     console.error(e);
-        // });
-        // return responseString;
     });
 }
 
-//---------------New User---------------//
-exports.addUser = function(request, response){
-    var user = new User();
-    user.login = request.body.login;
-    user.id = request.body.id;
-    user.followers = request.body.followers;
-    user.following = request.body.following;
-    user.repo_count = request.body.public_repos;
-    user.repos_url = request.body.repos_url;
-    user.save(function(err, user){
+exports.getUser = function(request, response){
+    var client = github.client();
+    var routeString = request.body.login;
+    client.get(routeString, {}, function(err, status, body, headers) {
         if(err) return response.set(500).send(err);
-        response.set(201).send(
-            {
-                success: "User added!",
-                user: user
-            }
-        );
-        return;
+        if(!body) return response.set(404).send("'error':'User not found'");
+        var user = new User();
+        user.login = body.login;
+        user.id = body.id;
+        user.followers = body.followers;
+        user.following = body.following;
+        user.repo_count = body.public_repos;
+        user.repos_url = body.repos_url;
+        user.save(function(err, user){
+            if(err) return response.set(500).send(err);
+            return response.set(201).send(
+                {
+                    success: "User added!",
+                    user: user
+                }
+            );
+        });
     });
 }
+
 
 
 
