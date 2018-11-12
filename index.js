@@ -1,5 +1,7 @@
 //Package Imports
 var busboyBodyParser = require('busboy-body-parser');
+var mongoose = require('mongoose');
+var mongo = require('mongodb');
 var https = require('https');
 var express = require('express');
 var fs = require('fs');
@@ -16,11 +18,24 @@ var APIRouter = express.Router();
 //var exports = module.exports = {};
 
 //Connecting to Database
-mongoose.connect('mongodb://127.0.0.1/db');
+mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
 app.use(busboyBodyParser({ limit: '10mb' }));
 
 //---------------GET Requests---------------//
-//APIRouter.get('/user/:username', getUser);
+APIRouter.get('/users', function(req, res) {
+    var resultArray = [];
+    mongo.connect(url, function(err, db){
+        assert.equal(null, err);
+        var cursor = db.collection('users').find();
+        cursor.forEach( function(doc, err) {
+            assert.equal(null, err);
+            resultArray.push(doc);
+        }, function() {
+            db.close();
+            res.send(resultArray);
+        });
+    });
+});
 
 
 
