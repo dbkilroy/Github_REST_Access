@@ -18,7 +18,10 @@ var APIRouter = express.Router();
 //var exports = module.exports = {};
 
 //Connecting to Database
-mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/test', {
+    useCreateIndex: true,
+    useNewUrlParser: true
+ });
 app.use(busboyBodyParser({ limit: '10mb' }));
 
 //---------------GET Requests---------------//
