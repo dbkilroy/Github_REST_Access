@@ -97,8 +97,11 @@ APIRouter.get('/users', function(request, response){
     MongoClient.connect(url, function(err, db) {
         if (err) return response.send(err);
         var dbo = db.db("test");
-        dbo.collection("users").findOne({}, function(err, result) {
-            if (err) throw err;
+        User.find({}, function(err, result) {
+            if (err) return response.set(200).send({
+                "Error": "User not found bby!"
+            });
+            console.log(result);
             return response.set(100).send(result);
             db.close();
         });
