@@ -65,7 +65,7 @@ APIRouter.get('/test',  function(request, response) {
     });
 });
 
-APIRouter.get('/user/:username', function(request, response){
+APIRouter.get('/downloadUser/:username', function(request, response){
     var client = github.client();
     client.get("/users/" + request.params.username, {}, function(err, status, body, headers) {
         if(err) return response.set(500).send(err);
@@ -85,6 +85,22 @@ APIRouter.get('/user/:username', function(request, response){
                     user: user
                 }
             );
+        });
+    });
+});
+
+APIRouter.get('/users', function(request, response){
+
+    var MongoClient = require('mongodb').MongoClient;
+    var url = "mongodb://localhost:27017/";
+
+    MongoClient.connect(url, function(err, db) {
+        if (err) return response.send(err);
+        var dbo = db.db("test");
+        dbo.collection("users").findOne({}, function(err, result) {
+            if (err) throw err;
+            return response.set(100).send(result);
+            db.close();
         });
     });
 });
