@@ -6,7 +6,7 @@ var https = require('https');
 var express = require('express');
 var fs = require('fs');
 var github = require('octonode');
-
+var ejs = require('ejs');
 //Modal Imports
 var User = require('./model/user.js');
 
@@ -89,9 +89,31 @@ APIRouter.get('/user/:username', function(request, response){
     });
 });
 
+// APIRouter.get('/repos/:username', function(request, response){
+//
+//     if (myDocument) {
+//         var url = JSON.stringify(myDocument.repos_url);
+//         var client = github.client();
+//         client.get("/users/" + request.params.username + "/repos", {}, function(err, status, body, headers) {
+//
+//
+//         });
+//     }
+//     user.save(function(err, user) {
+//         if(err) return response.set(500).send(err);
+//         return response.set(201).send(
+//             {
+//                 success: "User added!",
+//                 user: user
+//             }
+//         );
+//     });
+// });
+
 exports.sayHello = function(){
     return 'hello';
 };
+
 
 app.use('/api', APIRouter);
 app.listen(port, function(){
