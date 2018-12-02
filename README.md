@@ -17,6 +17,11 @@ npm install
 ``` 
 
 
+### Image of Repo Number vs. Followers Graph
+![alt text](https://github.com/kilroyda/Github_REST_Access/blob/master/views/sweng1.PNG)
+
+While the frontend is quite basic and minimal, the backend is far more impressive (I hope)! :ok_hand: :eyes: :sweat_drops:
+
 ## **Execution**
 I was unable to create a single application to easily run all the scripts so in order to run the application, I had to: 
 - Open a MongoD server using the 'mongod' command in the terminal
