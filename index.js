@@ -102,7 +102,6 @@ APIRouter.get('/users', function(request, response){
             if (err) return response.set(200).send({
                 "Error": "No Users found !"
             });
-            console.log(result);
             return response.set(100).send(result);
             db.close();
         });
