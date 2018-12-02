@@ -1,7 +1,7 @@
 const http = require('http');
 var request = require('request');
 var d3 = require('d3');
-var margin = {top: 20, right: 20, bottom: 30, left: 60},
+var margin = {top: 80, right: 20, bottom: 30, left: 160},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -12,13 +12,14 @@ var xValue = function(d) { return d.followers;}, // data -> value
 
 // setup y
 var yValue = function(d) { return d.repo_count;}, // data -> value
-    yMap = d3.scaleLog().range([height, 0]), // value -> display
+    yMap = d3.scaleLog().range([height, 0]),//.tickFormat(4,d3.format(",d")(d)), // value -> display
     yAxis = d3.axisLeft(yMap);
 
 // setup fill color
 var cValue = function(d) { return d.Manufacturer;},
     color = d3.scaleOrdinal(d3.schemeCatagory10);
 
+var username = function(d) { return d.login;};
 // add the graph canvas to the body of the webpage
 var svg = d3.select("body")
   .append("svg")
@@ -84,7 +85,7 @@ request(options, function (error, response, body) {
               .attr("y", 6)
               .attr("dy", ".71em")
               .style("text-anchor", "end")
-              .text("Number of Commits");
+              .text("Number of Repos");
 
 var engineer = svg.selectAll(".dot")
           .data(jsonData)
@@ -102,7 +103,7 @@ var engineer = svg.selectAll(".dot")
               tooltip.transition()
                    .duration(200)
                    .style("opacity", .9);
-              tooltip.html(jsonData.login + "<br/> (" + xValue(d)
+              tooltip.html(username(d) + "<br/> (" + xValue(d)
     	        + ", " + yValue(d) + ")")
                    .style("left", (d3.event.pageX + 5) + "px")
                    .style("top", (d3.event.pageY - 28) + "px");
