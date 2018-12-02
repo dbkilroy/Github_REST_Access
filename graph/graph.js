@@ -55,8 +55,8 @@ var options = {
 
 request(options, function (error, response, body) {
   console.log('error:', error); // Print the error if one occurred
-  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-  console.log('body:', body); // Print the HTML for the Google homepage.
+  // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+  // console.log('body:', body); // Print the HTML for the Google homepage.
 
   // let data = '';
   //
@@ -64,8 +64,9 @@ request(options, function (error, response, body) {
   // resp.on('data', (chunk) => {
   //   data += chunk;
   // });
-  console.log(JSON.stringify(request));
-  let data = request.body;
+
+  var data = body;
+  console.log(data);
   // The whole response has been received. Print out the result.
   // resp.on('end', () => {
   //   console.log(JSON.parse(data).explanation);
