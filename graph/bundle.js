@@ -32905,7 +32905,7 @@ var xValue = function(d) { return d.followers;}, // data -> value
 
 // setup y
 var yValue = function(d) { return d.repo_count;}, // data -> value
-    yMap = d3.scaleLog().range([height, 0]),//.tickFormat(4,d3.format(",d")(d)), // value -> display
+    yMap = d3.scaleLinear().range([height, 0]),//.tickFormat(4,d3.format(",d")(d)), // value -> display
     yAxis = d3.axisLeft(yMap);
 
 // setup fill color
@@ -32918,8 +32918,8 @@ var svg = d3.select("body")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(20,20)");
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // add the tooltip area to the webpage
 var tooltip = d3.select("body").append("div")
@@ -32958,21 +32958,23 @@ request(options, function (error, response, body) {
 
           // x-axis
           svg.append("g")
-              .attr("class", "x axis")
-              .attr("transform", "translate(0," + height + ")")
-              .call(xAxis)
-            .append("text")
-              .attr("class", "label")
-              .attr("x", width)
-              .attr("y", -6)
-              .style("text-anchor", "end")
-              .text("Followers");
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
 
-          // y-axis
+          svg.append("text")
+                .attr("class", "label")
+                .attr("x", width - 10)
+                .attr("y", height - 1)
+                .style("text-anchor", "end")
+                .text("Followers");
+
+            // y-axis
           svg.append("g")
               .attr("class", "y axis")
-              .call(yAxis)
-            .append("text")
+              .call(yAxis);
+
+          svg.append("text")
               .attr("class", "label")
               .attr("transform", "rotate(-90)")
               .attr("y", 6)
@@ -32991,7 +32993,8 @@ var engineer = svg.selectAll(".dot")
           .attr("cx", (d) => { return xMap(d.followers); })
           .attr("cy", (d) => { return yMap(d.repo_count); })
           .attr("r", 3.5)
-          //call the functions
+          .style("fill-opacity", .2)
+          .style("fill", "green")
           .on("mouseover", function(d) {
               tooltip.transition()
                    .duration(200)
