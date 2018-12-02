@@ -92,15 +92,15 @@ APIRouter.get('/downloadUser/:username', function(request, response){
 
 APIRouter.get('/users', function(request, response){
 
-    var MongoClient = require('mongodb').MongoClient;
+    var MongoClient = mongo.MongoClient;
     var url = "mongodb://localhost:27017/";
 
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
         if (err) return response.send(err);
         var dbo = db.db("test");
         User.find({}, function(err, result) {
             if (err) return response.set(200).send({
-                "Error": "User not found bby!"
+                "Error": "No Users found !"
             });
             console.log(result);
             return response.set(100).send(result);

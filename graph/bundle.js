@@ -32906,16 +32906,14 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40},
  */
 
 // setup x
-var xValue = function(d) { return d.Followers;}, // data -> value
-    xScale = d3.scaleLinear().range([0, width]), // value -> display
-    xMap = function(d) { return xScale(xValue(d));}, // data -> display
-    xAxis = d3.axisBottom(xScale);
+var xValue = function(d) { return d.followers;}, // data -> value
+    xMap = d3.scaleLinear().range([0, width]), // value -> display
+    xAxis = d3.axisBottom(xMap);
 
 // setup y
-var yValue = function(d) { return d["Number of Commits"];}, // data -> value
-    yScale = d3.scaleLinear().range([height, 0]), // value -> display
-    yMap = function(d) { return yScale(yValue(d));}, // data -> display
-    yAxis = d3.axisLeft(yScale);
+var yValue = function(d) { return d.repo_count;}, // data -> value
+    yMap = d3.scaleLinear().range([height, 0]), // value -> display
+    yAxis = d3.axisLeft(yMap);
 
 // setup fill color
 var cValue = function(d) { return d.Manufacturer;},
@@ -32957,16 +32955,78 @@ request(options, function (error, response, body) {
   // resp.on('data', (chunk) => {
   //   data += chunk;
   // });
+  // d3.json(body, (err, data) => {
+  //     if(error) {
+  //         throw new Error ("d3.json error");
+  //     }
+  //     else {
+  var jsonData = JSON.parse(body);
+  for (var i = 0; i < jsonData.length; i++) {
+      var counter = jsonData[i];
+  }
+          var mostFollowers = d3.max(jsonData.map((item) => {
+               console.log("\n" + item)
+              return item.followers;
+          }));
+          var leastFollowers = d3.min(jsonData.map((item) => {
+              return item.followers;
+          }));
 
-  var data = body;
-  console.log(data);
+          xMap.domain([leastFollowers, mostFollowers]);
+          yMap.domain([1, d3.max(jsonData, (d) => {
+              return d.repo_count;
+          }) + 1]);
+
+          // x-axis
+          svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis)
+            .append("text")
+              .attr("class", "label")
+              .attr("x", width)
+              .attr("y", -6)
+              .style("text-anchor", "end")
+              .text("Followers");
+
+          // y-axis
+          svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis)
+            .append("text")
+              .attr("class", "label")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("Number of Commits");
+  //     }
+  // })
+
+//   console.log(body);
+//   var i;
+//   for (i = 0; i < Object.keys(body).length; i++) {
+//   var user = body[i];
+//   d.followers = user.followers;
+//   d.repo_count = user.repo_count;
+//   d.login = user.login;
+// }
+
+
+
+
+  // for (var i = 0, len = data.length; i < len; ++i) {
+  //     var user = data[i];
+  //     user.Followers = +data.followers;
+  //     user.repo_count = +data.repo_count;
+  //   }
   // The whole response has been received. Print out the result.
   // resp.on('end', () => {
   //   console.log(JSON.parse(data).explanation);
   // });
 // don't want dots overlapping axis, so add in buffer to data domain
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+  // xScale.domain([d3.min(body, xValue)-1, d3.max(body, xValue)+1]);
+  // yScale.domain([d3.min(body, yValue)-1, d3.max(body, yValue)+1]);
 
 
 // d3.csv("cereal.csv", function(error, data) {
@@ -32978,57 +33038,58 @@ request(options, function (error, response, body) {
 // //    console.log(d);
 //   });
 
-  // don't want dots overlapping axis, so add in buffer to data domain
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+var engineer = svg.selectAll(".dot")
+          .data(jsonData)
+        .enter().append("g")
+          .attr("class", "dot")
+          .attr("x", (d) => { return xMap(d.followers); })
+          .attr("y", (d) => { return yMap(d.repo_count); });
 
-  // x-axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
-      .style("text-anchor", "end")
-      .text("Followers");
+      engineer.append("circle")
+          .attr("cx", (d) => { return xMap(d.followers); })
+          .attr("cy", (d) => { return yMap(d.repo_count); })
+          .attr("r", 3.5)
+          //call the functions
+          .on("mouseover", function(d) {
+              tooltip.transition()
+                   .duration(200)
+                   .style("opacity", .9);
+              tooltip.html(jsonData.login + "<br/> (" + xValue(d)
+    	        + ", " + yValue(d) + ")")
+                   .style("left", (d3.event.pageX + 5) + "px")
+                   .style("top", (d3.event.pageY - 28) + "px");
+          })
+          .on("mouseout", function(d) {
+              tooltip.transition()
+                   .duration(500)
+                   .style("opacity", 0);
+          });
 
-  // y-axis
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Number of Commits");
-
-  // draw dots
-  svg.selectAll(".dot")
-      .data(data)
-    .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 3.5)
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));})
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          tooltip.html(d["Cereal Name"] + "<br/> (" + xValue(d)
-	        + ", " + yValue(d) + ")")
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-      });
+  //
+  //
+  // // draw dots
+  // svg.selectAll(".dot")
+  //     .data(body)
+  //   .enter().append("circle")
+  //     .attr("class", "dot")
+  //     .attr("r", 3.5)
+  //     .attr("cx", xMap)
+  //     .attr("cy", yMap)
+  //     .style("fill", function(d) { return color(cValue(d));})
+  //     .on("mouseover", function(d) {
+  //         tooltip.transition()
+  //              .duration(200)
+  //              .style("opacity", .9);
+  //         tooltip.html(d.login + "<br/> (" + xValue(d)
+	//         + ", " + yValue(d) + ")")
+  //              .style("left", (d3.event.pageX + 5) + "px")
+  //              .style("top", (d3.event.pageY - 28) + "px");
+  //     })
+  //     .on("mouseout", function(d) {
+  //         tooltip.transition()
+  //              .duration(500)
+  //              .style("opacity", 0);
+  //     });
 
   // draw legend
   var legend = svg.selectAll(".legend")
