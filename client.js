@@ -5,9 +5,17 @@ var app = express();
 
 app.use(busboyBodyParser({ limit: '10mb' }));
 
-app.set('view engine', 'ejs');
-app.use('/', function(req, res) {
-    res.render('index');
+
+app.get('/',function(req,res){
+  res.sendFile('graph/index.html', { root: __dirname });
+});
+
+app.get('/graph.js',function(req,res){
+  res.sendFile('graph/graph.js', { root: __dirname });
+});
+
+app.get('/bundle.js',function(req,res){
+  res.sendFile('graph/bundle.js', { root: __dirname });
 });
 
 app.listen(3001, function() {

@@ -1,4 +1,5 @@
 //Package Imports
+var cors = require('cors');
 var busboyBodyParser = require('busboy-body-parser');
 var mongoose = require('mongoose');
 var mongo = require('mongodb');
@@ -24,7 +25,7 @@ mongoose.connect('mongodb://localhost:27017/test', {
     useNewUrlParser: true
  });
 app.use(busboyBodyParser({ limit: '10mb' }));
-
+app.use(cors());
 //---------------GET Requests---------------//
 
     // var resultArray = [];
